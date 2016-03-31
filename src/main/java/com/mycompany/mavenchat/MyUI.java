@@ -40,7 +40,9 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Layout;
+import java.util.Iterator;
 
 
 @Theme("valo")
@@ -75,30 +77,28 @@ public class MyUI extends UI implements BroadcastListener{
         access(new Runnable() {
             @Override
             public void run() {
-                ((Layout) getContent()).addComponent(new Label(message));
-
-                /*
-                Layout parent = (Layout) getContent();
-                String id = "chat";
-                for ( Component c : parent ) {
-    if ( id.equals( c.getId() ) ) {
-      c.
-              //addComponent(new Label(message));
-    }
-  }
-                */
-                //((Layout) getContent()).addComponent(new Label(message));
-               // getPage().findElement(By.id("chat")).addComponent(new Label(message);
-               // ((Layout) getContent()).
-                        
-                        //findElement(By.id("chat")).addComponent(new Label(message);
-                
-                /*Notification n = new Notification("Message received",
-                        message, Type.TRAY_NOTIFICATION);
-                n.show(getPage());*/
-                
-                //getPage().paintContent(target);
+                Component c = findById((Layout) getContent(), "chat");
+                ((Layout) c).addComponent(new Label(message));
             }
         });
+    }
+    
+     public Component findById(HasComponents root, String id) {
+        //System.out.println("findById called on " + root);
+
+        Iterator<Component> iterate = root.iterator();
+        while (iterate.hasNext()) {
+            Component c = iterate.next();
+            if (id.equals(c.getId())) {
+                return c;
+            }
+            if (c instanceof HasComponents) {
+                Component cc = findById((HasComponents) c, id);
+                if (cc != null)
+                    return cc;
+            }
+        }
+
+        return null;
     }
 }

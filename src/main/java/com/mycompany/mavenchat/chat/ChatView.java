@@ -37,7 +37,8 @@ public class ChatView extends CssLayout implements View {
     Button emoticon = new Button();
     TextField message = new TextField();
     Panel userPanel;
-    HorizontalLayout chat = new HorizontalLayout();
+    Panel chatPanel = new Panel();
+    VerticalLayout chat = new VerticalLayout();
     //Label chat = new Label();
     
     public void createPage(){
@@ -46,8 +47,8 @@ public class ChatView extends CssLayout implements View {
         messageLayout.addComponent(emoticon);
         messageLayout.addComponent(send);       
         
-        //chatLayout.addComponent(chat);
-        chatLayout.addComponent(chat);
+        chatPanel.setContent(chat);
+        chatLayout.addComponent(chatPanel);
         chatLayout.addComponent(messageLayout);       
      
         mainLayout.addComponent(chatLayout);
@@ -62,37 +63,21 @@ public class ChatView extends CssLayout implements View {
         mainLayout.setSpacing(true);
         mainLayout.setSizeFull();
         chat.setId("chat");
+ 
         
         usersPanel.setCaption("Czatowicze");
-        
-        //userPanel.setHeight("");
+
         userPanel.setHeight("30%");
         
         mainLayout.setWidth("100%");        
         mainLayout.setHeight("70%");
-      
+     
         setSizeFull();
-        
-         
- //usersPanel.setWidth(30.0f, Unit.PERCENTAGE);
- //usersLayout.setWidth(30.0f, Unit.PERCENTAGE);
-  
- //p.setWidth("90%");
- /*
- usersPanel.setWidth("30%");
- usersLayout.setWidth("30%");
- 
- mainLayout.setWidth("100%");
- chatLayout.setWidth("70%");
- //message.setWidth("100%");*/
- //setWidth("90%"); 
-// mainMainLayout.setWidth("100%");
- //mainLayout.setSizeFull();
- //mainLayout.setComponentAlignment(chatLayout, new Alignment(AlignmentInfo.Bits.ALIGNMENT_LEFT));
- //mainLayout.setComponentAlignment(usersLayout, new Alignment(AlignmentInfo.Bits.ALIGNMENT_LEFT));
- 
-        
-        //chat.setId("chat");
+        chat.setHeight("10em");
+        //chatPanel.setWidth("5em");
+         chatPanel.setHeight("10em");
+         chat.setHeight("100%");
+        chat.setMargin(true);
         
         send.setCaption("Wyślij");
         send.addClickListener(new Button.ClickListener() {
