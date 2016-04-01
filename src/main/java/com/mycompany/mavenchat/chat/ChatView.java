@@ -5,6 +5,8 @@ import com.mycompany.mavenchat.user.UserData;
 import com.mycompany.mavenchat.user.UserView;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.Page;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.AlignmentInfo;
 import com.vaadin.ui.Alignment;
@@ -63,7 +65,11 @@ public class ChatView extends CssLayout implements View {
         mainLayout.setSpacing(true);
         mainLayout.setSizeFull();
         chat.setId("chat");
- 
+        emoticon.setIcon(new ThemeResource("icons/vaadin-icons-png/smiley-o.png"),":)");
+
+        Page.Styles styles = Page.getCurrent().getStyles();
+        styles.add(".icon img{ width: 1em; }");
+        emoticon.setStyleName("icon");
         
         usersPanel.setCaption("Czatowicze");
 
