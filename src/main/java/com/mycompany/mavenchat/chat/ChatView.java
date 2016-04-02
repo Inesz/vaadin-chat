@@ -16,6 +16,7 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -52,6 +53,7 @@ public class ChatView extends CssLayout implements View {
     Panel chatPanel = new Panel();
     VerticalLayout chat = new VerticalLayout();
 
+
     public void createPage() {
 
         messageLayout.addComponent(message);
@@ -79,7 +81,7 @@ public class ChatView extends CssLayout implements View {
         Page.Styles styles = Page.getCurrent().getStyles();
         styles.add(".icon img{ width: 1em; }");
         emoticon.setStyleName("icon");
-              
+
         chatLayout.addComponent(new Emoticons().EmoticonsPanel());
 
         usersPanel.setCaption("Czatowicze");
@@ -89,10 +91,8 @@ public class ChatView extends CssLayout implements View {
         mainLayout.setHeight("70%");
 
         setSizeFull();
-        chat.setHeight("10em");
-        //chatPanel.setWidth("5em");
         chatPanel.setHeight("10em");
-        chat.setHeight("100%");
+        chat.setSizeUndefined();
         chat.setMargin(true);
 
         send.setCaption("Wyślij");
@@ -106,7 +106,7 @@ public class ChatView extends CssLayout implements View {
             }
         });
 
-        addListOfUsers();      
+        addListOfUsers();
     }
 
     public void addListOfUsers() {
@@ -136,15 +136,15 @@ class Emoticons extends CssLayout {
         grid.setMargin(true);
         grid.setSpacing(true);
         panel.setContent(grid);
-   
+
         addEmoButtons();
         return panel;
     }
 
-   void addEmoButtons() {
+    void addEmoButtons() {
         String themes = "http://localhost:8080/VAADIN/themes/mytheme";
         String icons = "icons/emoticons";
- 
+
         List<String> names = new ArrayList<String>();
         names.add("amor.gif");
         names.add("hejka.gif");
@@ -152,23 +152,23 @@ class Emoticons extends CssLayout {
         names.add("nakoniu.gif");
         names.add("tanytany.gif");
 
-        for (String name : names) { 
-            String path = icons+"/"+name;
-                System.out.println(path);
-                Button l = new Button();
-                l.setId(name);
-                //l.setWidth("100%");
-                l.setIcon(new ThemeResource(path), ":)");
-                grid.addComponent(l);
-                
-                l.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                String src = "<img src=" + themes+"/"+l.getIcon() + ">";
-                String msg = new Session().getAttribute("Login") + " : " + src;
-                com.mycompany.mavenchat.servis.loginBroadcaster.broadcastRoom(msg, new Session().getAttribute("Room"));
-            }
-        });
+        for (String name : names) {
+            String path = icons + "/" + name;
+            System.out.println(path);
+            Button l = new Button();
+            l.setId(name);
+            //l.setWidth("100%");
+            l.setIcon(new ThemeResource(path), ":)");
+            grid.addComponent(l);
+
+            l.addClickListener(new Button.ClickListener() {
+                @Override
+                public void buttonClick(Button.ClickEvent event) {
+                    String src = "<img src=" + themes + "/" + l.getIcon() + ">";
+                    String msg = new Session().getAttribute("Login") + " : " + src;
+                    com.mycompany.mavenchat.servis.loginBroadcaster.broadcastRoom(msg, new Session().getAttribute("Room"));
+                }
+            });
         }
     }
 }
