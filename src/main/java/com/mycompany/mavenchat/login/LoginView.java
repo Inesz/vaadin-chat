@@ -29,6 +29,9 @@ public class LoginView extends VerticalLayout implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
+        new Session().clearAttribute("Login");
+        new Session().clearAttribute("Room");
+        
         this.createPage();
     }
 
