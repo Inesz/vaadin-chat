@@ -1,4 +1,5 @@
 package com.mycompany.mavenchat;
+
 import com.mycompany.mavenchat.chat.ChatView;
 import com.mycompany.mavenchat.servis.MongoDB;
 import com.mycompany.mavenchat.servis.loginBroadcaster;
@@ -44,28 +45,27 @@ import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Layout;
 import java.util.Iterator;
 
-
-@Theme("valo")
+@Theme("mytheme")
 @Title("Welcome")
 //@Widgetset("com.mycompany.mavenchat.MyAppWidgetset")
 @Push
-public class MyUI extends UI implements BroadcastListener{
-           
+public class MyUI extends UI implements BroadcastListener {
+
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         Navigator navigator = new Navigator(this, this);
         navigator.addView("login", LoginView.class);
         navigator.addView("room", RoomView.class);
         navigator.addView("chat", ChatView.class);
-        
-        navigator.navigateTo("login");   
+
+        navigator.navigateTo("login");
     }
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
     }
-    
+
     @Override
     public void detach() {
         loginBroadcaster.unregister(this);
@@ -78,12 +78,13 @@ public class MyUI extends UI implements BroadcastListener{
             @Override
             public void run() {
                 Component c = findById((Layout) getContent(), "chat");
-                ((Layout) c).addComponent(new Label(message));
+                Label l = new Label(message, Label.CONTENT_XHTML);
+                ((Layout) c).addComponent(l);
             }
         });
     }
-    
-     public Component findById(HasComponents root, String id) {
+
+    public Component findById(HasComponents root, String id) {
         //System.out.println("findById called on " + root);
 
         Iterator<Component> iterate = root.iterator();
@@ -94,8 +95,9 @@ public class MyUI extends UI implements BroadcastListener{
             }
             if (c instanceof HasComponents) {
                 Component cc = findById((HasComponents) c, id);
-                if (cc != null)
+                if (cc != null) {
                     return cc;
+                }
             }
         }
 
