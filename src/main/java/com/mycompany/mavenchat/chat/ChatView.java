@@ -21,6 +21,7 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.PopupView;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -82,7 +83,14 @@ public class ChatView extends CssLayout implements View {
         styles.add(".icon img{ width: 1em; }");
         emoticon.setStyleName("icon");
 
-        chatLayout.addComponent(new Emoticons().EmoticonsPanel());
+        
+        PopupView popup = new PopupView(null, new Emoticons().EmoticonsPanel());
+        chatLayout.addComponent(popup);      
+        emoticon.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {              
+                    popup.setPopupVisible(true);               
+            }});
 
         usersPanel.setCaption("Czatowicze");
         userPanel.setHeight("30%");
@@ -149,9 +157,15 @@ class Emoticons extends CssLayout {
         names.add("amor.gif");
         names.add("hejka.gif");
         names.add("kumpel.gif");
-        names.add("nakoniu.gif");
+        names.add("naglowie.gif");
         names.add("tanytany.gif");
-
+        names.add("pisze.gif");
+        names.add("mur.gif");
+        names.add("oczko.gif");
+        
+        Page.Styles styles = Page.getCurrent().getStyles();
+        styles.add(".btnBgTransparent2{background: transparent !important; border: none !important; box-shadow:none !important;}") ;
+        
         for (String name : names) {
             String path = icons + "/" + name;
             System.out.println(path);
@@ -160,6 +174,7 @@ class Emoticons extends CssLayout {
             //l.setWidth("100%");
             l.setIcon(new ThemeResource(path), ":)");
             grid.addComponent(l);
+            l.setStyleName("btnBgTransparent2");
 
             l.addClickListener(new Button.ClickListener() {
                 @Override
