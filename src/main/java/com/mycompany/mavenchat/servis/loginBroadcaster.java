@@ -13,49 +13,36 @@ public class loginBroadcaster {
     private static final List<BroadcastListener> listeners = new CopyOnWriteArrayList<BroadcastListener>();
     //private static final List<BroadcastListener> roomListeners = new CopyOnWriteArrayList<BroadcastListener>();
     private static final List<BroadcastRoom> listenersInRoom = new CopyOnWriteArrayList<BroadcastRoom>();
-    
+
     public static void register(BroadcastListener listener) {
         listeners.add(listener);
     }
-    
-    public static void registerInRoom(BroadcastListener listener, String room) {
-        for(BroadcastRoom listroom : listenersInRoom){
-            if(listroom.getRoom().equals(room)){
+
+    public static void registerInRoom(BroadcastListener listener, String room) {    
+        for (BroadcastRoom listroom : listenersInRoom) {
+            if (listroom.getRoom().equals(room)) {   
                 listroom.setListener(listener);
+                sendHistory(listener, room);
+                System.out.println("room exist");
                 return;
             }
         }
-        
+
         BroadcastRoom newRoom = new BroadcastRoom();
         newRoom.setListener(listener);
         newRoom.setRoom(room);
         listenersInRoom.add(newRoom);
-    }
-    
-    public static void broadcastInRoom(final String message, final String room){
-        List<BroadcastListener> listeners = new ArrayList<BroadcastListener>();
-        
-        for(BroadcastRoom listroom : listenersInRoom){
-            if(listroom.getRoom().equals(room)){
-                listeners = listroom.getListener();
-            }else{
-                return;
-            }
-        }
-        
-        for (BroadcastListener listener : listeners){
-            listener.receiveBroadcast(message);
-        }
+        System.out.println("new room");
     }
 
     public static void unregister(BroadcastListener listener) {
         listeners.remove(listener);
     }
-    
-     public static void unregisterFromRoom(BroadcastListener listener, String room) {
+
+    public static void unregisterFromRoom(BroadcastListener listener, String room) {
         listeners.remove(listener);
-        for(BroadcastRoom listroom : listenersInRoom){
-            if(listroom.getRoom().equals(room)){
+        for (BroadcastRoom listroom : listenersInRoom) {
+            if (listroom.getRoom().equals(room)) {
                 listroom.removeListener(listener);
                 return;
             }
@@ -68,45 +55,76 @@ public class loginBroadcaster {
             listener.receiveBroadcast(message);
         }
     }
-    */
+     */
     public static void broadcast(final String message) {
         for (BroadcastListener listener : listeners) {
             listener.receiveBroadcast(message);
         }
     }
-    
-     public static synchronized void broadcastRoom(final String message, String room) {
-        
-         for(BroadcastRoom listroom : listenersInRoom){
-            if(listroom.getRoom().equals(room)){ 
-                for (final BroadcastListener listener: listroom.getListener()){
-                //executorService.execute(new Runnable() {
-                //@Override
-                //public void run() {
-                
-                System.out.println("wysyam: " + message);
+
+    public static synchronized void broadcastRoom(final String message, String room) {
+        List<BroadcastListener> roomListeners = new CopyOnWriteArrayList<BroadcastListener>();
+
+        for (BroadcastRoom listroom : listenersInRoom) {
+            if (listroom.getRoom().equals(room)) {
+                System.out.println("add to messages");
+                listroom.setMessages(message);
+                roomListeners = listroom.getListener();
+                System.out.println("find broadcast room");
+            }
+        }
+
+        for (BroadcastListener listener : roomListeners) {
+            //new Thread() {
+            //    @Override
+            //    public void run() {
+                    System.out.println("wysyam: " + message);
                     listener.receiveBroadcast(message);
-                }
-                //}
-            //});
-                return;
+            //    }
+            //};
+        }
+        return;
     }
-         }
-     }
-     
     
+       public static void sendHistory(BroadcastListener listener, final String room) {
+        List<String> history = new CopyOnWriteArrayList<String>();
+
+        for (BroadcastRoom listroom : listenersInRoom) {
+            if (listroom.getRoom().equals(room)) {
+                history = listroom.getMessages();
+                System.out.println("find history");
+            }
+        }
+
+        for (String message : history) {
+            System.out.println("wysyam: " + message);
+            //new Thread() {
+            //    @Override
+            //    public void run() {
+                    listener.receiveBroadcast(message);
+            //    }
+            //};
+        }
+        return;
+    }
+
+
     public interface BroadcastListener {
+
         public void receiveBroadcast(String message);
-        
+
         //public void receiveLoginBroadcast();
     }
 }
 
-    class BroadcastRoom implements Serializable{
-private List<loginBroadcaster.BroadcastListener> listeners = new CopyOnWriteArrayList<loginBroadcaster.BroadcastListener>();;
-private String room;
+class BroadcastRoom implements Serializable {
 
-void BroadcastRoom(){}
+    private List<loginBroadcaster.BroadcastListener> listeners = new CopyOnWriteArrayList<loginBroadcaster.BroadcastListener>();
+    private List<String> messages = new CopyOnWriteArrayList<String>();
+    private String room;
+
+    void BroadcastRoom() {
+    }
 //void BroadcastRoom(String room){this.room = room;}
 /*void BroadcastRoom(String room, loginBroadcaster.BroadcastListener listener){
     this.room = room;
@@ -115,25 +133,36 @@ void BroadcastRoom(){}
     //setListener(listener);
 }*/
 
-public String getRoom(){
- return room;   
-}
+    public String getRoom() {
+        return room;
+    }
 
-public void setRoom(String room){
- this.room = room;   
-}
+    public void setRoom(String room) {
+        this.room = room;
+    }
 
-public List<loginBroadcaster.BroadcastListener> getListener(){
-    return listeners;
-}
-    
-public void setListener(loginBroadcaster.BroadcastListener listener){
-    if(listener == null)System.out.println("null"); else System.out.println("not null"); 
-    this.listeners.add(listener);
-}
+    public List<loginBroadcaster.BroadcastListener> getListener() {
+        return listeners;
+    }
 
-public void removeListener(loginBroadcaster.BroadcastListener listener){
-    listeners.remove(listener);
-}
-}
+    public void setListener(loginBroadcaster.BroadcastListener listener) {
+        if (listener == null) {
+            System.out.println("null");
+        } else {
+            System.out.println("not null");
+        }
+        this.listeners.add(listener);
+    }
 
+    public void removeListener(loginBroadcaster.BroadcastListener listener) {
+        listeners.remove(listener);
+    }
+
+    public List<String> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(String messages) {
+        this.messages.add(messages);
+    }
+}
